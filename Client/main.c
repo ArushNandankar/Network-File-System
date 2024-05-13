@@ -1,29 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <sys/select.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include "headers.h"
+#include "main.h"
 
-// #define NM_PORT 8090
-
-#define SUPER_BUFFER_SIZE 1024
-#define MAX_BUFFER_SIZE 1024
-
-#define pnl printf("\n");
-
-int main()
-{
+int main() {
     // Connect to the naming server
     // Naming server can recognize that a client wants to connect because server sends $ on connecting but client doesn't
 
@@ -36,8 +13,7 @@ int main()
 
     // CLI for the client to execute command ---------------------------------------------
     // -----------------------------------------------------------------------------------
-    while (1)
-    {
+    while (true) {
         printf("~> ");
         fgets(buffer, sizeof(buffer), stdin);
         buffer[strlen(buffer) - 1] = '\0';
