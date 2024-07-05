@@ -1,6 +1,3 @@
-# Network File System Enhancements
+# Network File System
 
-This project is an extension of the Network File System, originally developed for Operating Systems and Networks course by Team 60.
-
-# How to use
-TODO:
+This project is a Network File System, originally developed for Operating Systems and Networks course by Team 60.
