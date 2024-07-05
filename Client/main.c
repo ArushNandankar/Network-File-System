@@ -18,8 +18,7 @@ int main() {
         fgets(buffer, sizeof(buffer), stdin);
         buffer[strlen(buffer) - 1] = '\0';
 
-        if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-        {
+        if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
             perror("Socket creation failed");
             return 1;
         }
@@ -27,27 +26,24 @@ int main() {
         server_addr.sin_family = AF_INET;
         server_addr.sin_port = htons(NM_PORT);
 
-        if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr) <= 0)
-        {
+        if (inet_pton(AF_INET, "127.0.0.1", & server_addr.sin_addr) <= 0) {
             perror("Invalid address");
             return 1;
         }
 
-        if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
-        {
+        if (connect(sock, (struct sockaddr * ) & server_addr, sizeof(server_addr)) == -1) {
             perror("Connection failed");
             return 1;
         }
 
-        if (strncmp(buffer, "WRITE", 5) == 0)
-        {
+        if (strncmp(buffer, "WRITE", 5) == 0) {
             // printf("In write\n");
-            char *token;
+            char * token;
             char rest[1024];
             strcpy(rest, buffer);
             int token_count = 0;
-            char *file_path;
-            char *content;
+            char * file_path;
+            char * content;
 
             token = strtok(rest, " ");
             file_path = strtok(NULL, " ");
@@ -57,15 +53,13 @@ int main() {
             snprintf(buffer_small, MAX_BUFFER_SIZE, "WRITE %s", file_path);
             send(sock, buffer_small, strlen(buffer_small), 0);
             int bytes_recieved = recv(sock, buffer_small, MAX_BUFFER_SIZE, 0);
-            if (bytes_recieved <= 0)
-            {
+            if (bytes_recieved <= 0) {
                 printf("ERROR 101: Error in receiving data from naming server");
                 continue;
             }
             buffer_small[bytes_recieved] = '\0';
             int SS_PORT = atoi(buffer_small);
-            if (SS_PORT == -1)
-            {
+            if (SS_PORT == -1) {
                 printf("ERROR 102: File not found\n");
                 continue;
             }
@@ -78,8 +72,7 @@ int main() {
                  Connect with the storage server using the PORT received from the naming server
             */
 
-            if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-            {
+            if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
                 perror("Socket creation failed");
                 return 1;
             }
@@ -87,14 +80,12 @@ int main() {
             server_addr.sin_family = AF_INET;
             server_addr.sin_port = htons(SS_PORT);
 
-            if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr) <= 0)
-            {
+            if (inet_pton(AF_INET, "127.0.0.1", & server_addr.sin_addr) <= 0) {
                 perror("Invalid address");
                 return 1;
             }
 
-            if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
-            {
+            if (connect(sock, (struct sockaddr * ) & server_addr, sizeof(server_addr)) == -1) {
                 perror("Connection failed");
                 return 1;
             }
@@ -110,38 +101,28 @@ int main() {
             buffer_small[bytes_recieved] = '\0';
             //printf("|%s|", buffer_small);
             fflush(stdout);
-            if (strcmp(buffer_small, "ACK_W") == 0)
-            {
+            if (strcmp(buffer_small, "ACK_W") == 0) {
                 printf("RECIVED\n");
                 fflush(stdout);
-            }
-            else if (!strcmp(buffer_small, "Someone Is Already Writing"))
-            {
+            } else if (!strcmp(buffer_small, "Someone Is Already Writing")) {
                 printf("ERROR 103: Someone Is Already Writing\n");
-            }
-            else
-            {
+            } else {
                 printf("ERROR 104: ERROR WRITING FILE\n");
             }
             close(sock);
-        }
-
-        else if (strncmp(buffer, "READ", 4) == 0)
-        {
+        } else if (strncmp(buffer, "READ", 4) == 0) {
             // printf("In read\n");
             send(sock, buffer, strlen(buffer), 0);
             // ----------------------------------------------------------------
             // Recieve the port number of SS ----------------------------------
             int bytes_recieved = recv(sock, buffer_small, MAX_BUFFER_SIZE, 0);
-            if (bytes_recieved <= 0)
-            {
+            if (bytes_recieved <= 0) {
                 printf("ERROR 201: Error in receiving data from naming server");
                 continue;
             }
             buffer_small[bytes_recieved] = '\0';
             int SS_PORT = atoi(buffer_small);
-            if (SS_PORT == -1)
-            {
+            if (SS_PORT == -1) {
                 printf("ERROR 202: File not found\n");
                 continue;
             }
@@ -154,8 +135,7 @@ int main() {
                  Connect with the storage server using the PORT received from the naming server
             */
 
-            if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-            {
+            if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
                 perror("Socket creation failed");
                 return 1;
             }
@@ -163,14 +143,12 @@ int main() {
             server_addr.sin_family = AF_INET;
             server_addr.sin_port = htons(SS_PORT);
 
-            if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr) <= 0)
-            {
+            if (inet_pton(AF_INET, "127.0.0.1", & server_addr.sin_addr) <= 0) {
                 perror("Invalid address");
                 return 1;
             }
 
-            if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
-            {
+            if (connect(sock, (struct sockaddr * ) & server_addr, sizeof(server_addr)) == -1) {
                 perror("Connection failed");
                 return 1;
             }
@@ -180,8 +158,7 @@ int main() {
             */
             send(sock, buffer, strlen(buffer), 0);
             bytes_recieved = recv(sock, buffer_small, MAX_BUFFER_SIZE, 0);
-            if (bytes_recieved <= 0)
-            {
+            if (bytes_recieved <= 0) {
                 printf("ERROR 203: Error in receiving data from storage server");
                 continue;
             }
@@ -191,20 +168,14 @@ int main() {
             bytes_recieved = recv(sock, buffer_small, MAX_BUFFER_SIZE, 0);
             buffer_small[bytes_recieved] = '\0';
             fflush(stdout);
-            if (strcmp(buffer_small, "ACK_R") == 0)
-            {
+            if (strcmp(buffer_small, "ACK_R") == 0) {
                 // printf("RECIVED\n");
                 fflush(stdout);
-            }
-            else
-            {
+            } else {
                 printf("ERROR 204: Error READING FILE\n");
             }
             close(sock);
-        }
-
-        else if (strncmp(buffer, "GETINFO", 7) == 0)
-        {
+        } else if (strncmp(buffer, "GETINFO", 7) == 0) {
 
             // printf("In GETINFO\n");
             /*
@@ -217,15 +188,13 @@ int main() {
             // ----------------------------------------------------------------
             // Recieve the port number of SS ----------------------------------
             int bytes_recieved = recv(sock, buffer_small, MAX_BUFFER_SIZE, 0);
-            if (bytes_recieved <= 0)
-            {
+            if (bytes_recieved <= 0) {
                 printf("ERROR 301: Error in receiving data from naming server");
                 continue;
             }
             buffer_small[bytes_recieved] = '\0';
             int SS_PORT = atoi(buffer_small);
-            if (SS_PORT == -1)
-            {
+            if (SS_PORT == -1) {
                 printf("ERROR 302: File not found\n");
                 continue;
             }
@@ -238,20 +207,17 @@ int main() {
                  Connect with the storage server using the PORT received from the naming server
             */
 
-            if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-            {
+            if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
                 perror("Socket creation failed");
                 return 1;
             }
             server_addr.sin_family = AF_INET;
             server_addr.sin_port = htons(SS_PORT);
-            if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr) <= 0)
-            {
+            if (inet_pton(AF_INET, "127.0.0.1", & server_addr.sin_addr) <= 0) {
                 perror("Invalid address");
                 return 1;
             }
-            if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
-            {
+            if (connect(sock, (struct sockaddr * ) & server_addr, sizeof(server_addr)) == -1) {
                 perror("Connection failed");
                 return 1;
             }
@@ -261,8 +227,7 @@ int main() {
             */
             send(sock, buffer, strlen(buffer), 0);
             bytes_recieved = recv(sock, buffer_small, MAX_BUFFER_SIZE, 0);
-            if (bytes_recieved <= 0)
-            {
+            if (bytes_recieved <= 0) {
                 printf("ERROR 303: Error in receiving data from storage server");
                 continue;
             }
@@ -275,21 +240,21 @@ int main() {
             int otherRead, otherWrite, otherExecute;
             char mtime[50], atime[50], ctime[50];
 
-            sscanf(buffer_small, "%lld,%c,%d,%d,%d,%d,%d,%d,%d,%d,%d,%[^,],%[^,],%[^,]",
-                   &fileSize,
-                   &fileType,
-                   &userRead, &userWrite, &userExecute,
-                   &groupRead, &groupWrite, &groupExecute,
-                   &otherRead, &otherWrite, &otherExecute,
-                   mtime, atime, ctime);
+            sscanf(buffer_small, "%lld,%c,%d,%d,%d,%d,%d,%d,%d,%d,%d,%[^,],%[^,],%[^,]", &
+                fileSize, &
+                fileType, &
+                userRead, & userWrite, & userExecute, &
+                groupRead, & groupWrite, & groupExecute, &
+                otherRead, & otherWrite, & otherExecute,
+                mtime, atime, ctime);
 
             // Format permissions so they look sexy
             char permissions[11];
             sprintf(permissions, "%c%c%c%c%c%c%c%c%c%c",
-                    fileType == 'd' ? 'd' : '-',
-                    userRead ? 'r' : '-', userWrite ? 'w' : '-', userExecute ? 'x' : '-',
-                    groupRead ? 'r' : '-', groupWrite ? 'w' : '-', groupExecute ? 'x' : '-',
-                    otherRead ? 'r' : '-', otherWrite ? 'w' : '-', otherExecute ? 'x' : '-');
+                fileType == 'd' ? 'd' : '-',
+                userRead ? 'r' : '-', userWrite ? 'w' : '-', userExecute ? 'x' : '-',
+                groupRead ? 'r' : '-', groupWrite ? 'w' : '-', groupExecute ? 'x' : '-',
+                otherRead ? 'r' : '-', otherWrite ? 'w' : '-', otherExecute ? 'x' : '-');
 
             printf("%s %lld %s", permissions, fileSize, mtime);
             printf("Last access time: %s", atime);
@@ -297,50 +262,29 @@ int main() {
             sleep(1);
             bytes_recieved = recv(sock, buffer_small, MAX_BUFFER_SIZE, 0);
             buffer_small[bytes_recieved] = '\0';
-            if (strcmp(buffer_small, "ACK_G") == 0)
-            {
+            if (strcmp(buffer_small, "ACK_G") == 0) {
                 // printf("RECIVED\n");
                 fflush(stdout);
-            }
-            else
-            {
+            } else {
                 printf("ERROR 304: ERROR GETTING FILE INFO\n");
             }
             close(sock);
-        }
-
-        else if (strncmp(buffer, "CREATEDIR", 9) == 0)
-        {
+        } else if (strncmp(buffer, "CREATEDIR", 9) == 0) {
             send(sock, buffer, strlen(buffer), 0);
             close(sock);
-        }
-
-        else if (strncmp(buffer, "CREATEFILE", 10) == 0)
-        {
+        } else if (strncmp(buffer, "CREATEFILE", 10) == 0) {
             send(sock, buffer, strlen(buffer), 0);
             close(sock);
-        }
-
-        else if (strncmp(buffer, "DELETEDIR", 9) == 0)
-        {
+        } else if (strncmp(buffer, "DELETEDIR", 9) == 0) {
             send(sock, buffer, strlen(buffer), 0);
             close(sock);
-        }
-
-        else if (strncmp(buffer, "DELETEFILE", 10) == 0)
-        {
+        } else if (strncmp(buffer, "DELETEFILE", 10) == 0) {
             send(sock, buffer, strlen(buffer), 0);
             close(sock);
-        }
-
-        else if (strncmp(buffer, "COPY", 4) == 0)
-        {
+        } else if (strncmp(buffer, "COPY", 4) == 0) {
             send(sock, buffer, strlen(buffer), 0);
             close(sock);
-        }
-
-        else
-        {
+        } else {
             close(sock);
             printf("Invalid command\n");
             printf("Valid commands are:\n");
